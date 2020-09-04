@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:instagram_clon/login_page.dart';
 import 'package:instagram_clon/tab_page.dart';
 
 class LoginPage extends StatelessWidget {
@@ -23,9 +22,13 @@ class LoginPage extends StatelessWidget {
               padding: EdgeInsets.all(50.0),
             ),
             SignInButton(
-              Buttons.Google, onPressed: (){
+              Buttons.Google,
+              onPressed: (){
                 _handleSignIn().then((user){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TabPage(user)));
+                  //print(user);
+
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => TabPage(user)));
                 });
             },
             )
@@ -38,9 +41,8 @@ class LoginPage extends StatelessWidget {
   Future<FirebaseUser> _handleSignIn() async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    FirebaseUser user = (await _auth.signInWithCredential(
-      GoogleAuthProvider.getCredential(idToken: googleAuth.idToken, accessToken: googleAuth.accessToken)
-    )) as FirebaseUser;
+    FirebaseUser user = await _auth.signInWithCredential(
+      GoogleAuthProvider.getCredential(idToken: googleAuth.idToken, accessToken: googleAuth.accessToken)) as FirebaseUser;
     return user;
   }
 }
